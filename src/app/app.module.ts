@@ -12,6 +12,7 @@ import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
+import { HttpClientModule } from '@angular/common/http';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
@@ -23,25 +24,37 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
     
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     MatButtonModule,
     MatToolbarModule,
     MatListModule,
     MsalModule.forRoot( new PublicClientApplication({
+      // auth: {
+      //   clientId: '6fdea934-6fb1-4189-89f1-d5a4c208e769',
+      //   authority: 'https://login.microsoftonline.com/efc007d7-20d8-4fee-b63e-752a6459e31c', 
+      //   redirectUri: 'http://localhost:4200'
+      // },
+      // cache: {
+      //   cacheLocation: 'localStorage',
+      //   storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
+      // }
       auth: {
-        clientId: 'e5e627c0-ee32-427b-8cc5-1841b7fefbb9',
-        authority: '0745e4e9-2462-4b7a-97e2-4051a4ce1aa0',
-        redirectUri: 'http://localhost:4200'
-      },
-      cache: {
-        cacheLocation: 'localStorage',
-        storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
-      }
+        clientId: "d3e93fcd-c7fa-4962-b8e0-c458f5ff70e2", //This is your client ID
+        authority: "https://login.microsoftonline.com/common", 
+        redirectUri: "http://localhost:4200", 
+        navigateToLoginRequestUrl: false,
+    },
+    cache: {
+        cacheLocation: 'localStorage', // Needed to avoid "User login is required" error.
+        storeAuthStateInCookie: true  // Recommended to avoid certain IE/Edge issues.
+    }
     }), {
       interactionType: InteractionType.Redirect, // MSAL Guard Configuration
       authRequest: {
-        scopes: ['user.read']
+        scopes: ['user.read'],
+        // extraQueryParameters: {"id_token_hint" : idToken}
       }
   }, {
     interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration

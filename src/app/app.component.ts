@@ -10,7 +10,7 @@ import { filter, takeUntil } from 'rxjs/operators';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = 'msal-angular-tutorial';
+  title = 'msal angular';
   isIframe = false;
   loginDisplay = false;
   private readonly _destroying$ = new Subject<void>();
@@ -35,7 +35,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authService.loginPopup({...this.msalGuardConfig.authRequest} as PopupRequest)
         .subscribe({
           next: (result) => {
-            console.log(result);
+            console.log('Result in login: ', result);
+            // console.log('Result in login accesstToken: ', result);
+            localStorage.setItem('accessToken', JSON.stringify(result.accessToken));
             this.setLoginDisplay();
           },
           error: (error) => console.log(error)
@@ -53,6 +55,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   logout() { // Add log out function here
+    // this.authService.instance.getActiveAccount() != null;
+    localStorage.removeItem('accessToken')
     this.authService.logoutPopup({
       mainWindowRedirectUri: "/"
     });
